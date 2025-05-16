@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class BlogTest extends TestCase
 {
@@ -27,8 +28,9 @@ class BlogTest extends TestCase
     public function testBlogPostPageIsAccessibleAndContainsPost()
     {
         $user = User::factory()->create();
-        $post = Post::factory()->create([
+        $post = Post::factory()->published()->create([
             'user_id' => $user->id,
+            'published_at' => now(),
         ]);
 
         $response = $this->get(route('post', $post));
@@ -45,6 +47,7 @@ class BlogTest extends TestCase
         $user1 = User::factory()->create();
         $post1 = Post::factory()->create([
             'user_id' => $user1->id,
+
         ]);
 
         $user2 = User::factory()->create();
@@ -196,7 +199,7 @@ class BlogTest extends TestCase
             ->assertDontSee($user3->name);
     }
 
-        /**
+    /**
      * Ensure that the promoted posts page contains only promoted posts.
      */
     public function testPromotedPostsPageContainsOnlyPromotedPosts()
@@ -391,6 +394,18 @@ class BlogTest extends TestCase
      */
     public function testBlogPostsPageHasPagination()
     {
-        $this->markTestIncomplete();
+        $user = User::factory()->create();
+
+
+        $posts = Post::factory()->count(15)->create([
+            'user_id' => $user->id,
+            'published_at' => now(),
+            'image' => 'image.jpg',
+
+        ]);
+
+        $response = $this->get(route('posts'))
+            ->assertStatus(200)
+            ->assertSee('page=2');
     }
 }

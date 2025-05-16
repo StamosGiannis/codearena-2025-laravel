@@ -19,4 +19,20 @@ class Post extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    protected $fillable = [
+        'title',
+        'description',
+        'body',
+        'image',
+        'slug',
+        'published_at',
+        'user_id',
+        'promoted',
+    ];
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

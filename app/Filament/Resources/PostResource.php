@@ -31,6 +31,10 @@ class PostResource extends Resource
                 Forms\Components\Select::make('user_id')
                     ->relationship('author', 'name')
                     ->required(),
+                Forms\Components\DateTimePicker::make('published_at')
+                    ->label('Published At')
+                    ->nullable()
+                    ->default(null),
             ]);
     }
 
